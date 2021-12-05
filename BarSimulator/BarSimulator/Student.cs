@@ -15,6 +15,8 @@ namespace BarSimulator
 
         public string Name { get; set; }
         public Bar Bar { get; set; }
+        public double budget { get; set; }
+        public int age { get; set; }
 
         private NightlifeActivities GetRandomNightlifeActivity()
         {
@@ -69,12 +71,20 @@ namespace BarSimulator
 
         private void Drink()
         {
-            List<string> drinksNames = this.Bar.GiveMenu().Select(drink => drink.name).ToList();
-            string chosenDrink = drinksNames[this.random.Next(0, drinksNames.Count)];
-            Drink drink = Bar.GiveDrink(chosenDrink);
-            if (drink != null)
+            Drink chosenDrink = this.Bar.GiveMenu()[this.random.Next(0, this.Bar.GiveMenu().Count)];
+            if (this.budget - chosenDrink.price < 0)
             {
-                Console.WriteLine($"Student: {this.Name} is dirnking {drink.name}");
+                Console.WriteLine($"Student hos no money");
+            }
+            else
+            {
+                Drink drink = Bar.GiveDrink(chosenDrink.name);
+                if (drink != null)
+                {
+                    Console.WriteLine($"Student: {this.Name} is dirnking {drink.name}");
+                    this.budget -= drink.price;
+                }
+
             }
         }
 
@@ -103,10 +113,12 @@ namespace BarSimulator
             Console.WriteLine($"{Name} is going back home.");
         }
 
-        public Student(string name, Bar bar)
+        public Student(string name, Bar bar, double budget, int age)
         {
             Name = name;
             Bar = bar;
+            this.budget = budget;
+            this.age = age;
         }
     }
 }

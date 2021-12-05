@@ -11,11 +11,13 @@ namespace BarSimulator
         List<Student> students = new List<Student>();
         Semaphore semaphore = new Semaphore(10, 10);
         List<Drink> menu = new List<Drink>();
+        public List<Drink> snapshotMenu { get; set; }
 
 
         public void SetMenu(List<Drink> menu)
         {
             this.menu = menu;
+            this.snapshotMenu = menu.Select(x => new Drink(x.name, x.price, x.quantity)).ToList();
         }
 
         public List<Drink> GiveMenu()
@@ -37,6 +39,7 @@ namespace BarSimulator
                 return null;
             }
 
+
             return selectedDrink;
         }
 
@@ -45,7 +48,14 @@ namespace BarSimulator
             semaphore.WaitOne();
             lock (students)
             {
-                students.Add(student);
+                if (student.age < 18)
+                {
+                    Console.WriteLine($"Student: {student.Name} is under age");
+                }
+                else
+                {
+                    students.Add(student);
+                }
             }
         }
 
@@ -57,5 +67,16 @@ namespace BarSimulator
             }
             semaphore.Release();
         }
-    }
+
+        public void Report()
+        {
+            foreach (var drink in this.menu)
+            {
+                Drink snapshotedDrink = this.snapshotMenu.First(x => x.name == drink.name);
+
+                Console.WriteLine($"Drink {drink.name} sold {snapshotedDrink.quantity - drink.quantity} drinks in stock: {drink.quantity}");
+            }
+        }
+    }   
 }
+    
