@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 
@@ -53,7 +54,7 @@ namespace BarSimulator
                         Thread.Sleep(100);
                         break;
                     case BarActivities.Drink:
-                        Console.WriteLine($"{Name} is drinking.");
+                        this.Drink();
                         Thread.Sleep(100);
                         break;
                     case BarActivities.Leave:
@@ -63,6 +64,17 @@ namespace BarSimulator
                         break;
                     default: throw new NotImplementedException();
                 }
+            }
+        }
+
+        private void Drink()
+        {
+            List<string> drinksNames = this.Bar.GiveMenu().Select(drink => drink.name).ToList();
+            string chosenDrink = drinksNames[this.random.Next(0, drinksNames.Count)];
+            Drink drink = Bar.GiveDrink(chosenDrink);
+            if (drink != null)
+            {
+                Console.WriteLine($"Student: {this.Name} is dirnking {drink.name}");
             }
         }
 

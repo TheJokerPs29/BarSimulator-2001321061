@@ -8,7 +8,12 @@ namespace BarSimulator
     {
         static void Main(string[] args)
         {
+            Drink vodka = new Drink("Vodka", 45,20);
+            Drink whiskey = new Drink("Whiskey", 70,20);
+
+
             Bar bar = new Bar();
+            bar.SetMenu(new List<Drink>() { vodka, whiskey });
             List<Thread> studentThreads = new List<Thread>();
             for (int i = 1; i < 100; i++)
             {
